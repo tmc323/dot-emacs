@@ -86,6 +86,7 @@
 ;; (add-hook 'lisp-interaction-mode-hook 'hl-p-hook)
 ;; (add-hook 'lisp-mode-hook 'hl-p-hook)
 ;; (add-hook 'emacs-lisp-mode-hook 'hl-p-hook)
+
 (define-globalized-minor-mode global-highlight-parentheses-mode
   highlight-parentheses-mode
   (lambda ()
@@ -348,28 +349,21 @@
 (global-set-key "\C-ch" 'pylookup-lookup)
 
 ;; 괄호나 따옴표 짝짓기
-(autoload 'autopair-global-mode "autopair" nil t)
-(autopair-global-mode)
-(add-hook 'python-mode-hook
-          #'(lambda ()
-              (push '(?' . ?')
-                    (getf autopair-extra-pairs :code))
-              (setq autopair-handle-action-fns
-                    (list #'autopair-default-handle-action
-                          #'autopair-python-triple-quote-action))))
+;; (autoload 'autopair-global-mode "autopair" nil t)
+;; (autopair-global-mode)
+;; (add-hook 'python-mode-hook
+;;           #'(lambda ()
+;;               (push '(?' . ?')
+;;                     (getf autopair-extra-pairs :code))
+;;               (setq autopair-handle-action-fns
+;;                     (list #'autopair-default-handle-action
+;;                           #'autopair-python-triple-quote-action))))
 
 ;; ORG-MODE
 
 (require 'org-install)
 
 (global-set-key "\C-ca" 'org-agenda)
-
-;; Set to the location of your Org files on your local system
-(setq org-directory "~/Dropbox/org")
-;; Set to the name of the file where new notes will be stored
-(setq org-mobile-inbox-for-pull "~/Dropbox/org/flagged.org")
-;; Set to <your Dropbox root directory>/MobileOrg.
-(setq org-mobile-directory "~/Dropbox/MobileOrg")
 
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 (global-set-key "\C-cl" 'org-store-link)
@@ -405,12 +399,6 @@
 		 (define-key org-agenda-mode-map "\C-p" 'previous-line)
 		 (define-key org-agenda-keymap "\C-p" 'previous-line)))))
 
-(require 'remember)
-
-(add-hook 'remember-mode-hook 'org-remember-apply-template)
-
-(define-key global-map [(control meta ?r)] 'remember)
-
 (custom-set-variables
  '(org-agenda-files (quote ("~/Dropbox/org/todo.org")))
  '(org-default-notes-file "~/Dropbox/org/notes.org")
@@ -438,14 +426,36 @@
           (lambda nil
         (org-agenda-skip-entry-if (quote scheduled) (quote deadline)
                       (quote regexp) "\n]+>")))
-         (org-agenda-overriding-header "Unscheduled TODO entries: "))))))
- '(org-remember-store-without-prompt t)
- '(org-remember-templates
-   (quote (("Todo" ?t "* TODO %?\n  %u" "~/Dropbox/org/todo.org" "Tasks")
-       ("Notes" ?n "* %u %?" "~/Dropbox/org/notes.org" "Notes")
-       ("Guitar" ?g "* %u %?" "~/Dropbox/org/notes.org" "Guitar"))))
- '(remember-annotation-functions (quote (org-remember-annotation)))
- '(remember-handler-functions (quote (org-remember-handler))))
+         (org-agenda-overriding-header "Unscheduled TODO entries: ")))))))
+
+ (setq org-capture-templates
+      (quote (("t" "Todo" entry (file+headline "~/Dropbox/org/todo.org" "Tasks")
+             "* TODO %?\n  %i\n  %a")
+        ("n" "Note" entry (file+headline "~/Dropbox/org/notes.org" "Notes")
+             "* %?\nEntered on %U\n  %i\n  %a")
+        ("j" "Journal" entry (file+datetree "~/Dropbox/org/journals.org")
+             "* %?\nEntered on %U\n  %i\n  %a"))))
+
+;; Set to the location of your Org files on your local system
+(setq org-directory "~/Dropbox/org")
+;; Set to the name of the file where new notes will be stored
+(setq org-mobile-inbox-for-pull "~/Dropbox/org/flagged.org")
+;; Set to <your Dropbox root directory>/MobileOrg.
+(setq org-mobile-directory "~/Dropbox/MobileOrg")
+(add-hook 'org-mobile-post-push-hook
+  (lambda () (shell-command "sitecopy -u org")))
+(add-hook 'org-mobile-pre-pull-hook
+  (lambda () (shell-command "sitecopy -f org;sitecopy -s org")))
+;; (require 'remember)
+;; (add-hook 'remember-mode-hook 'org-remember-apply-template)
+;; (define-key global-map [(control meta ?r)] 'remember)
+;; '(org-remember-store-without-prompt t)
+;; '(org-remember-templates
+;;   (quote (("Todo" ?t "* TODO %?\n  %u" "~/Dropbox/org/todo.org" "Tasks")
+;;       ("Notes" ?n "* %u %?" "~/Dropbox/org/notes.org" "Notes")
+;;       ("Guitar" ?g "* %u %?" "~/Dropbox/org/notes.org" "Guitar"))))
+;; '(remember-annotation-functions (quote (org-remember-annotation)))
+;; '(remember-handler-functions (quote (org-remember-handler))))
 
 ;; 음력지원
 (require 'cal-korea)
