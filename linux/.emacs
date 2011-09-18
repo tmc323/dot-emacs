@@ -362,6 +362,10 @@
 ;; ORG-MODE
 
 (require 'org-install)
+;; capture modification
+(load-file "~/.emacs.d/org-capture-mod.el")
+;; 음력지원
+(require 'cal-korea)
 
 (global-set-key "\C-ca" 'org-agenda)
 
@@ -430,11 +434,13 @@
 
  (setq org-capture-templates
       (quote (("t" "Todo" entry (file+headline "~/Dropbox/org/todo.org" "Tasks")
-             "* TODO %?\n  %i\n  %a")
-        ("n" "Note" entry (file+headline "~/Dropbox/org/notes.org" "Notes")
-             "* %?\nEntered on %U\n  %i\n  %a")
-        ("j" "Journal" entry (file+datetree "~/Dropbox/org/journals.org")
-             "* %?\nEntered on %U\n  %i\n  %a"))))
+             "* TODO %?\n  %i\n")
+	      ("n" "Note" entry (headlinesearch "~/Dropbox/org/notes.org" "Notes")
+	       "* %?\nEntered on %U\n  %i\n")
+	      ("j" "Journal" entry (file+datetree "~/Dropbox/org/journals.org")
+	       "* %?\nEntered on %U\n  %i\n")
+	      )))
+
 
 ;; Set to the location of your Org files on your local system
 (setq org-directory "~/Dropbox/org")
@@ -446,16 +452,3 @@
   (lambda () (shell-command "sitecopy -u org")))
 (add-hook 'org-mobile-pre-pull-hook
   (lambda () (shell-command "sitecopy -f org;sitecopy -s org")))
-;; (require 'remember)
-;; (add-hook 'remember-mode-hook 'org-remember-apply-template)
-;; (define-key global-map [(control meta ?r)] 'remember)
-;; '(org-remember-store-without-prompt t)
-;; '(org-remember-templates
-;;   (quote (("Todo" ?t "* TODO %?\n  %u" "~/Dropbox/org/todo.org" "Tasks")
-;;       ("Notes" ?n "* %u %?" "~/Dropbox/org/notes.org" "Notes")
-;;       ("Guitar" ?g "* %u %?" "~/Dropbox/org/notes.org" "Guitar"))))
-;; '(remember-annotation-functions (quote (org-remember-annotation)))
-;; '(remember-handler-functions (quote (org-remember-handler))))
-
-;; 음력지원
-(require 'cal-korea)
