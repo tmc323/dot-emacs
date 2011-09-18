@@ -22,8 +22,10 @@
 ;; (setq py-python-command "/usr/bin/python2")
 ;; (setq python-python-command "/usr/bin/python2")
 
-(setenv "PATH" (concat "/sw/bin:"                                                            (getenv "PATH")))
-(setenv "PYTHONPATH" (concat "/sw/lib/python2.7/site-packages:"                                (getenv "PYTHONPATH")))
+(setenv "PATH" (concat "/sw/bin:/usr/local/bin:"
+		       (getenv "PATH")))
+(setenv "PYTHONPATH" (concat "/sw/lib/python2.7/site-packages:"
+			     (getenv "PYTHONPATH")))
 
 (setq exec-path (append exec-path '("/sw/bin")))
 (setq exec-path (append exec-path '("/usr/local/bin")))
@@ -473,6 +475,7 @@
 ;; Set to <your Dropbox root directory>/MobileOrg.
 (setq org-mobile-directory "~/Dropbox/MobileOrg")
 (add-hook 'org-mobile-post-push-hook
-  (lambda () (shell-command "sitecopy -u org")))
+  (lambda () (print (shell-command "sitecopy -u org"))))
 (add-hook 'org-mobile-pre-pull-hook
-  (lambda () (shell-command "sitecopy -f org;sitecopy -s org")))
+  (lambda () (print (shell-command "sitecopy -f org;sitecopy -s org"))))
+
