@@ -10,6 +10,8 @@
 ;; (setq python-python-command "/usr/bin/python2")
 
 (add-to-list 'load-path "~/.emacs.d")
+;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/dvc")
+(require 'dvc-autoloads)
 
 ;; == 기본 색상 ==
 (add-to-list 'initial-frame-alist '(foreground-color . "white"))
@@ -20,6 +22,8 @@
 ;; == 한글설정  ==
 
 ;; * Shift-Space 로 한영전환,
+(set-input-method "korean-hangul")
+(toggle-input-method)
 (global-set-key (kbd "S-SPC") 'toggle-input-method)
 ;; * 한글 폰트
 (set-fontset-font "fontset-default" 'hangul '("NanumGothic" . "unicode-bmp"))
@@ -313,7 +317,7 @@
 
 (setq py-python-command-args '("--colors=Linux"))
 
-(require 'tramp)
+;;(require 'tramp)
 (require 'python-pep8)
 (require 'python-pylint)
 
